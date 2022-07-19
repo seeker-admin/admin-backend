@@ -7,6 +7,7 @@ import (
 	"github.com/seeker-admin/admin-backend/log"
 	"net/http"
 	"net/http/httputil"
+	"os"
 )
 
 func main() {
@@ -18,8 +19,11 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Get("/victim/*", victimRoute)
 
-	log.Info("Listening at localhost:80")
-	err := http.ListenAndServe(":80", r)
+	certFile := os.Getenv("SSL_CERT_FILE_PATH")
+	keyFile := os.Getenv("SSL_PRIVKEY_FILE")
+
+	log.Info("Listening at localhost:443")
+	err := http.ListenAndServeTLS(":443", certFile, keyFile, nil)
 	if err != nil {
 		log.Error(err)
 		return
