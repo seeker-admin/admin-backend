@@ -23,7 +23,7 @@ func main() {
 	keyFile := os.Getenv("SSL_PRIVKEY_FILE")
 
 	log.Info("Listening at localhost:443")
-	err := http.ListenAndServeTLS(":443", certFile, keyFile, nil)
+	err := http.ListenAndServeTLS(":443", certFile, keyFile, r)
 	if err != nil {
 		log.Error(err)
 		return
