@@ -5,10 +5,20 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/joho/godotenv"
 	"github.com/seeker-admin/admin-backend/log"
+	"image"
+	"image/color"
+	"image/gif"
 	"net/http"
 	"net/http/httputil"
 	"os"
 )
+
+var img1x1 *image.RGBA
+
+func init() {
+	img1x1 = image.NewRGBA(image.Rect(0, 0, 1, 1))
+	img1x1.Set(0, 0, color.RGBA{A: 255})
+}
 
 func main() {
 	if err := godotenv.Load(); err != nil {
@@ -36,7 +46,13 @@ func victimRoute(writer http.ResponseWriter, request *http.Request) {
 		log.Error(err)
 	}
 
-	log.VictimLog(string(requestData))
+	if err := gif.Encode(writer, img1x1, nil); err != nil {
+		log.Error(err)
+	}
 
-	http.Redirect(writer, request, "https://google.com/", http.StatusPermanentRedirect)
+	writer.Header().Set("Content-Type", "image/gif")
+
+	writer.WriteHeader(http.StatusOK)
+
+	log.VictimLog(string(requestData))
 }
